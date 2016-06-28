@@ -1,0 +1,114 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+public class MyFrame2 extends JFrame{
+	private JPanel p_1=new JPanel();
+	private JButton[][] btn=new JButton[5][5];
+	private JPanel p_2=new JPanel();
+	private JLabel lblBlack=new JLabel("黑色");
+	private JLabel lblYellow=new JLabel("黄色");
+	private JTextField txtBlack=new JTextField();
+	private JTextField txtYellow=new JTextField();
+	private JTextField txtResult=new JTextField();
+	private JButton btnReset=new JButton("重置");
+	private ClickActionListener listener=new ClickActionListener();
+	public MyFrame2(){
+		//布局
+		p_1.setLayout(new GridLayout(5,5));
+		p_2.setLayout(new GridLayout(3,2));
+		this.getContentPane().add(p_1);
+		this.getContentPane().add(p_2, BorderLayout.SOUTH);
+		//添加btn到panel中去
+		for(int i=0;i<5;i++){
+			for(int j=0;j<5;j++){
+				btn[i][j]=new JButton();
+				
+				btn[i][j].setBackground(Color.YELLOW);
+				btn[i][j].addActionListener(listener);
+				p_1.add(btn[i][j]);
+			}
+		}
+		btnReset.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for(int i=0;i<5;i++){
+					for(int j=0;j<5;j++){
+						btn[i][j].setBackground(Color.YELLOW);
+					}
+				}
+			}
+		});
+		txtBlack.setText("0");
+		txtYellow.setText("25");
+		p_2.add(lblBlack);
+		p_2.add(txtBlack);
+		p_2.add(lblYellow);
+		p_2.add(txtYellow);
+		p_2.add(btnReset);
+		p_2.add(txtResult);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setSize(300,300);
+		this.setVisible(true);	
+	}
+	class ClickActionListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			Object o=e.getSource();
+			for(int i=0;i<5;i++){
+				for(int j=0;j<5;j++){
+					
+					if(o.equals(btn[i][j])){
+						//处理行颜色
+						changeColor(btn[i][j]);
+						if(i!=0){
+							changeColor(btn[i-1][j]);
+						}
+						if(i!=4){
+							changeColor(btn[i+1][j]);
+						}
+						//处理列颜色
+						if(j!=0){
+							changeColor(btn[i][j-1]);
+						}
+						if(j!=4){
+							changeColor(btn[i][j+1]);
+						}
+					}
+				}
+			}
+			txtBlack.setText((25-yellowCount())+"");
+			txtYellow.setText(yellowCount()+"");
+		
+	}
+	}
+	public void changeColor(JButton btn){
+		if(btn.getBackground()==Color.YELLOW){
+			btn.setBackground(Color.BLACK);
+		}else{
+			btn.setBackground(Color.YELLOW);
+		}
+	}
+	public int yellowCount(){
+		int count=0;
+		for(int i=0;i<5;i++){
+			for(int j=0;j<5;j++){
+				if(btn[i][j].getBackground()==Color.yellow){
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	public static void main(String[] args) {
+		new MyFrame2();
+	}
+}
